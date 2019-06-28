@@ -25,16 +25,19 @@
             <!-- 登陆状态开始 -->
             <el-row>
                 <!-- 下拉菜单 -->
-                <el-dropdown v-if="false">
+                <el-dropdown v-if="$store.state.user.userInfo.token">
                    <el-row type='flex' align="middle" class="el-dropdown-link" >
-                        <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt="">
-                    <span >地球发动机</span>
+                        <img 
+                        :src="$axios.defaults.baseURL +  $store.state.user.userInfo.user.defaultAvatar" alt="" >
+                    <span >{{$store.state.user.userInfo.user.nickname}}</span>
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </el-row> 
 
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>个人中心</el-dropdown-item>
-                        <el-dropdown-item>退出</el-dropdown-item>   
+                        <el-dropdown-item>
+                            <span @click='handleLogout'>退出</span>
+                        </el-dropdown-item>   
                     </el-dropdown-menu>
                 </el-dropdown>
 
@@ -58,7 +61,13 @@
 
 <script>
 export default {
-
+    methods:{
+        //退出
+        handleLogout(){
+            this.$store.commit('user/clearUserInfo')
+            this.$message.success('退出成功')
+        }
+    }
 }
 </script>
 
