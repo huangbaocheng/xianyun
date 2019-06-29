@@ -81,15 +81,18 @@ export default {
     };
   },
   mounted(){
+    
     //请求轮播图接口
     this.$axios({
       url:'/scenics/banners',
       method:"GET",
     }).then(res=>{
+     
       const {data}=res.data;
       this.banners=data;
 
-    })
+    });
+    // console.log(this.$axios.defaults);
   },
   methods:{
     //tab栏切换
