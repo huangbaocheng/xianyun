@@ -38,6 +38,21 @@
 
     <!-- 特价机票 -->
     <div class="air-sale">
+      <el-row type='flex' class="air-sale-pic" justify="space-between">
+        <el-col :span=6 v-for='(item,index) in sales' :key='index'>
+          <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`">
+            <img :src="item.cover" alt="" />
+            <el-row 
+            type='flex' 
+            class="layer-bar" 
+            justify="space-between">
+              <span>{{item.departCity}}-{{item.destCity}}</span>
+              <span>￥{{item.price}}</span>
+
+            </el-row>
+          </nuxt-link>
+        </el-col>
+      </el-row>
         
     </div>
   </section>
@@ -46,8 +61,22 @@
 <script>
  import SearchForm from '@/components/air/searchForm.vue';
 export default {
+  data(){
+   return {
+     sales:[],
+   }
+  },
     components:{
         SearchForm,
+    },
+    mounted(){
+      this.$axios({
+        url:'/airs/sale',
+      }).then(res=>{
+        
+        const {data} = res.data;
+        this.sales=data;
+      })
     }
 
 }
@@ -65,7 +94,7 @@ export default {
       height:140px;
       position: relative;
       overflow: hidden;
-
+    
       img{
         width:100%;
       }
@@ -165,4 +194,5 @@ export default {
     font-size:20px;
   }
 }
+
 </style>
