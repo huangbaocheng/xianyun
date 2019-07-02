@@ -22,7 +22,7 @@
                 <el-select size="mini" v-model="flightTimes"  placeholder="起飞时间" @change="handleFlightTimes">
                     <el-option
                     :label='`${item.from}:00-${item.to}:00`'
-                    value="item"
+                    :value="item"
                     v-for="(item,index) in data.options.flightTimes"
                     :key='index'
                     >
@@ -92,27 +92,50 @@ export default {
     methods: {
         // 选择机场时候触发
         handleAirport(value){
-            
+            // console.log(value);
+             const arr= this.data.flights.filter(v=>{
+               return v.org_airport_name=value;
+           });
+           this.$emit('setDataList',arr)
         },
 
         // 选择出发时间时候触发
         handleFlightTimes(value){
-            
+            // console.log(value);
+             const arr= this.data.flights.filter(v=>{
+            const start= +v.dep_time.split(":")[0];
+               return value.from <= start&& start<value.to;
+           });
+           this.$emit('setDataList',arr)
         },
 
          // 选择航空公司时候触发
         handleCompany(value){
-            
+            // console.log(value);
+            //过滤航空公司值等于value
+           const arr= this.data.flights.filter(v=>{
+               return v.airline_name=value;
+           });
+           this.$emit('setDataList',arr)
         },
 
          // 选择机型时候触发
         handleAirSize(value){
            
+            const arr= this.data.flights.filter(v=>{
+               return v.plane_size=value;
+           });
+           this.$emit('setDataList',arr)
         },
         
         // 撤销条件时候触发
         handleFiltersCancel(){
+            this.airport = "";
+            this.flightTimes = "";
+            this.company = "";
+            this.airSize = "";
             
+            this.$emit("setDataList", this.data.flights)
         },
     }
 }

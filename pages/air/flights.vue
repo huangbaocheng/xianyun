@@ -5,8 +5,12 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
+                <!-- 传递一个方法，并且这个方法是要修改dataList -->
                 <div>
-                    <FlightsFilters :data='flightsData'/>
+                    <FlightsFilters 
+                    :data='cacheflightsData'
+                    @setDataList="setDataList"
+                    />
                 </div>
                 
                 <!-- 航班头部布局 -->
@@ -43,6 +47,7 @@
             <!-- 侧边栏 -->
             <div class="aside">
                 <!-- 侧边栏组件 -->
+                <FlightsAside/>
             </div>
         </el-row>
     </section>
@@ -54,6 +59,7 @@ import moment from "moment";
 import FightsListHead from "@/components/air/fightsListHead.vue"
 import FlightsItem from "@/components/air/flightsItem.vue"
 import FlightsFilters from "@/components/air/flightsFilters.vue"
+import FlightsAside from "@/components/air/flightsAside.vue"
 
 export default {
     data(){
@@ -65,6 +71,13 @@ export default {
                 info:{},
                 options:{}
             },
+             // 总数据，一旦赋值之后不会被修改
+            cacheflightsData: {
+                // 默认机票列表
+                flights: [],
+                info: {},
+                options: {}
+            },
             total:0,     //总条数
             pageIndex:1,  //默认显示第一页
             pageSize:5,   //默认显示多少条数据
@@ -74,24 +87,34 @@ export default {
     components:{
         FightsListHead,
         FlightsItem,
-        FlightsFilters
+        FlightsFilters,
+        FlightsAside
     },
     methods:{
+        
         //切换每页条数触发
         handleSizeChange(value){
             // console.log(value);
             this.pageSize = value;
-            this.dataList=this.flightsData.flights.slice((this.pageIndex-1)*this.pageSize,
-            this.pageIndex*this.pageSize)
+           this.setDataList();
            
         },   
         // 页数切换时候触发
         handleCurrentChange(value){
             this.pageIndex=value
 
-          this.dataList=this.flightsData.flights.slice((this.pageIndex-1)*this.pageSize,
-          this.pageIndex*this.pageSize)
+            this.setDataList();
         },
+        //过滤 修改dataList 子传父
+        setDataList(arr){
+            if(arr){
+                this.flightsData.flights=arr;
+                this.total=arr.length;
+                this.pageIndex=1
+            };
+                this.dataList=this.flightsData.flights.slice((this.pageIndex-1)*this.pageSize,
+                this.pageIndex*this.pageSize)
+        }
 
     },
      mounted(){
@@ -105,8 +128,11 @@ export default {
             params:this.$route.query
         }).then(res=>{
             // console.log(res);
-            
             this.flightsData=res.data;
+             // 缓存总数据，值和flightsData是相等的，一旦赋值之后不得修改
+            this.cacheflightsData = {...res.data};
+            
+            
             //总条数
             this.total=res.data.total;
             // 默认获取第一到第5条

@@ -173,6 +173,7 @@ export default {
 
     // 提交表单是触发
     handleSubmit() {
+     
       //自定义规则
       const rules = {
         //出发的城市
@@ -204,8 +205,14 @@ export default {
       //跳转到列表页
       this.$router.push({
         path: "/air/flights",
-        query: this.form
+        query: this.form,
       });
+       //本地储存
+      //把当前表单的值保存到本地
+      const localairs=JSON.parse(localStorage.getItem('airs') || '[]');
+       localairs.unshift(this.form)//带进去新的值
+       //保存到本地
+       localStorage.setItem('airs',JSON.stringify(localairs));
     }
   },
   mounted() {}
