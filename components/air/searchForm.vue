@@ -52,7 +52,7 @@
           style="width:100%;"
           type="primary"
           icon="el-icon-search"
-          v-model="form.departDate"
+          
           @click="handleSubmit"
         >搜索</el-button>
       </el-form-item>

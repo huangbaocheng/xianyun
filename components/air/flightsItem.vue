@@ -105,10 +105,13 @@ export default {
         }
     },
     methods:{
+        //显示隐藏座位
         handleIsshow(){
             this.isshow=!this.isshow;
         },
+        //提交选定
         handleOption(item){
+            console.log(item);
             this.$router.push({
                 path:'/air/order',
                 query:{

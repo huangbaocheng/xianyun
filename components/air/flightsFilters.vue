@@ -21,9 +21,9 @@
             <el-col :span="4">
                 <el-select size="mini" v-model="flightTimes"  placeholder="起飞时间" @change="handleFlightTimes">
                     <el-option
+                     v-for="(item,index) in data.options.flightTimes"
                     :label='`${item.from}:00-${item.to}:00`'
-                    :value="item"
-                    v-for="(item,index) in data.options.flightTimes"
+                    :value="`${item.from},${item.to}`"
                     :key='index'
                     >
                     </el-option>
@@ -102,9 +102,10 @@ export default {
         // 选择出发时间时候触发
         handleFlightTimes(value){
             // console.log(value);
+            const [from,to]=value.split(','); //[6,12]
              const arr= this.data.flights.filter(v=>{
             const start= +v.dep_time.split(":")[0];
-               return value.from <= start&& start<value.to;
+               return from <= start && start < to;
            });
            this.$emit('setDataList',arr)
         },
@@ -114,7 +115,25 @@ export default {
             // console.log(value);
             //过滤航空公司值等于value
            const arr= this.data.flights.filter(v=>{
-               return v.airline_name=value;
+            //    return v.airline_name=value;
+             // 过滤航空公司值等于value
+            let hasValue = false; // 当前这个机票是否合适
+            if( v.airline_name===value){
+                hasValue=true;
+                // 多选
+                const [from, to] = this.flightTimes.split(","); 
+                // [6,12]
+                const start = +v.dep_time.split(":")[0];
+                
+                if( from && start <= from || start >to){
+                    hasValue = false;
+                }
+                    
+            }
+
+            return hasValue;
+
+
            });
            this.$emit('setDataList',arr)
         },

@@ -90,7 +90,31 @@ export default {
         FlightsFilters,
         FlightsAside
     },
+    watch:{
+        $route(){
+            this.getData()
+        }
+    },
     methods:{
+        getData(){
+             this.$axios({
+            url:'/airs',
+            method:"GET",
+            params:this.$route.query
+        }).then(res=>{
+            // console.log(res);
+            this.flightsData=res.data;
+             // 缓存总数据，值和flightsData是相等的，一旦赋值之后不得修改
+            this.cacheflightsData = {...res.data};
+            
+             // 初始化数据
+            this.pageIndex = 1;
+            //总条数
+            this.total=res.data.total;
+            // 默认获取第一到第5条
+            this.dataList = res.data.flights.slice(0, 5);  
+        })
+        },
         
         //切换每页条数触发
         handleSizeChange(value){
@@ -122,22 +146,8 @@ export default {
         //$route.params 可以拿到url地址栏上的动态值
         // console.log(this.$route.query);
         //请求列表数据
-        this.$axios({
-            url:'/airs',
-            method:"GET",
-            params:this.$route.query
-        }).then(res=>{
-            // console.log(res);
-            this.flightsData=res.data;
-             // 缓存总数据，值和flightsData是相等的，一旦赋值之后不得修改
-            this.cacheflightsData = {...res.data};
-            
-            
-            //总条数
-            this.total=res.data.total;
-            // 默认获取第一到第5条
-            this.dataList = res.data.flights.slice(0, 5);  
-        })
+        this.getData()
+       
     }
     
 }

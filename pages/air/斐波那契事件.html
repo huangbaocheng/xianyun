@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 斐波那契事件 -->
+
+
+    <script>
+        var res=[1,1 ]
+        function computer(start,end){
+            res.push(start + end)
+            if(res.length === 100){
+                 
+                console.log(res[99]);
+                return;
+            }
+            computer(end,start+end)
+           
+        }
+        computer(1,1)
+    </script>
+</body>
+</html>

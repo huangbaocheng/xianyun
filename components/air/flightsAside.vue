@@ -21,8 +21,10 @@
         </div>
 
         <div class="history">
-            <h5>历史查询</h5>
-
+            <div class='history-title'>
+                <h5>历史查询</h5>
+                <!-- <button @click="handleDeletes">清空</button> -->
+            </div>    
 
             <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
                 v-for='(item,index) in history' 
@@ -52,8 +54,23 @@ export default {
       
     },
       mounted(){
+          //讀取本地儲存
             this.history=JSON.parse(localStorage.getItem('airs')||'[]')
-        }
+        },
+        // methods:{
+        //     //清除本地記錄
+        //     handleDeletes(){
+            //    removeItem
+        //        //remove,item
+        //         // remove:function(){
+        //         //     localStorage.clear();
+        //         //     local.code=[];
+        //         //     local.num=[];
+        //         //     history.go(0);
+        //         // },
+                
+        //     }
+        // }
 
 }
 </script>
@@ -88,12 +105,19 @@ export default {
     border:1px #ddd solid;
     padding:10px;
     margin-top:10px;
+    .history-title{
+        display: flex;
+        justify-content: space-between;
+        h5{
+            font-size: 16px;
+            font-weight: normal;
+            padding-bottom: 10px;
+            border-bottom:1px #eee solid;
 
-    h5{
-        font-size: 16px;
-        font-weight: normal;
-        padding-bottom: 10px;
-        border-bottom:1px #eee solid;
+        }
+    
+
+
     }
 
     .history-item{

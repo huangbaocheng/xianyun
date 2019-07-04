@@ -112,14 +112,7 @@ export default {
             });
             return;
         }
-    //      if(this.form.username.length !== 11){
-    //     this.$confirm('手机号码格式错误', '提示', {
-    //         confirmButtonText: '确定',
-    //         showCancelButton: false,
-    //         type: 'warning'
-    //     })
-    //     return;
-    // }
+
 
     //请求验证码
          this.$axios({
