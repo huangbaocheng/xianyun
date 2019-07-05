@@ -28,14 +28,44 @@
 <script>
 // 生成二维码的包
 import QRCode from "qrcode";
+import { async } from 'q';
 
 export default {
     data(){
         return{
             order:{
-              
-            }
+            },
+            //定时器对象
+            timer:null,
         }
+    }, 
+    methods:{
+        //查询付款状态
+        isPay(){
+           return this.$axios({
+                url:'/airorders/checkpay',
+                method:"POST",
+                data:{
+                    id:this.$route.query.id,
+                    nonce_str:this.order.price,
+                    out_trade_no:this.order.orderNo
+                },
+                headers:{
+                      Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+                }
+            }).then(res=>{
+                console.log(res);
+                if(res.data.statusTxt === '订单未支付'){
+                    return false;
+                }else{
+                    return true;
+                }
+            })
+        }
+    },
+        // 当页面销毁之后清楚定时器   生命周期
+    destroyed(){
+        clearInterval(this.timer);
     },
     mounted(){
         // 需要点时间把本地的值赋给store
@@ -57,8 +87,20 @@ export default {
                     QRCode.toCanvas(stage, this.order.payInfo.code_url, {
                         width: 200
                     }); 
+                    //查询付款的状态
+                    this.timer=setInterval( async () => {
+                        //接收的是resolve 也就是 。then 的返回值
+                        const Pay= await this.isPay();
+                        if(Pay){
+                            this.$message.success('订单支付成功');
+                            clearInterval(this.timer);
+                            
+                        }
+                        
+                        
+                    }, 3000);
                 })
-        }, 500);
+        }, 100);
       
     }  
 }
